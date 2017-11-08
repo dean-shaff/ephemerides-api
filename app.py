@@ -1,13 +1,8 @@
-from flask import Flask, render_template
+from flask import render_template
 
 from src.api import EphemAPI
 
-api = EphemAPI()
-app = Flask(__name__)
-
-@app.route("/get_ephem")
-def get_ephem():
-    pass
+app, api = EphemAPI.create_flask_app(__name__)
 
 @app.route("/")
 def home():

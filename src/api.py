@@ -2,7 +2,7 @@ import logging
 import math
 import datetime
 
-from flask import Flask
+from flask import Flask, request, jsonify
 import ephem
 
 module_logger = logging.getLogger(__name__)
@@ -10,7 +10,7 @@ module_logger = logging.getLogger(__name__)
 class EphemAPI(object):
 
     methods = {
-        "/get_ephem":"process_ephem_request"
+        "/get_ephem":{"method":"process_ephem_request","method_type":["POST"]}
     }
 
     def __init__(self):
@@ -18,7 +18,21 @@ class EphemAPI(object):
         self.observer.epoch = ephem.J2000
 
     def process_ephem_request(self):
-        pass
+        """
+        Process an incoming POST method call.
+
+        """
+        content = request.get_json()
+        if content is None:
+            return "Error: No JSON data present", 500
+        if not ("observer_details" in content and "sources" in content):
+            return "Error: Unrecognized keys in JSON data", 500
+        else:
+            observer_details, sources = content['observer_details'], content['sources']
+            module_logger.debug("process_ephem_request: {}".format(content))
+            self.get_ephem(observer_details, sources)
+            return jsonify(sources=sources), 200
+
 
     def get_ephem(self, observer_details, sources, inplace=True):
         """
@@ -83,9 +97,10 @@ class EphemAPI(object):
             return sources_new
 
     @classmethod
-    def create_flask_app(cls, name):
+    def create_flask_app(cls, name="ephem-api",app=None):
         api = cls()
-        app = Flask(name)
+        if app is None:
+            app = Flask(name)
         for key in cls.methods:
-            app.route(key)(getattr(api, cls.methods[key]))
+            app.route(key, methods=cls.methods[key]["method_type"])(getattr(api, cls.methods[key]["method"]))
         return app, api

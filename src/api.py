@@ -1,0 +1,3 @@
+
+class EphemAPI(object):
+    pass

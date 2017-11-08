@@ -1,0 +1,6 @@
+*.pyc
+*.txt
+*.log
+*.hdf5
+*.png
+*.fits

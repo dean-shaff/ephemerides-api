@@ -63,11 +63,11 @@ class EphemAPI(object):
         lon, lat, el = observer_details['lon'], observer_details['lat'], observer_details['el']
         self.observer.lon = float(lon) * (math.pi/180.)
         self.observer.lat = float(lat) * (math.pi/180.)
-        self.observer.elevation = el
+        self.observer.elevation = float(el)
         self.observer.date = datetime.datetime.utcnow()
         sources_new = []
         for src in sources:
-            raJ2000, decJ2000 = src["RAJ2000"], src["DECJ2000"]
+            raJ2000, decJ2000 = float(src["RAJ2000"]), float(src["DECJ2000"])
             src_body = ephem.FixedBody()
             src_body._ra = raJ2000 * (math.pi/180.)
             src_body._dec = decJ2000 * (math.pi/180.)

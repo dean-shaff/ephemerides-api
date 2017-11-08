@@ -16,9 +16,31 @@
     <div class="container">
         <div class="row">
             <div class="twelve columns">
-                <h3>Welcome to the Ephem API!</h3>
+                <h3>Welcome to the Ephemerides API!</h3>
             </div>
         </div>
+		<div class="row">
+			<div class="four columns" id="observer-info">
+				<h5>Observer Info</h5>
+				<label>Longitude</label>
+				<input class="u-full-width" id="lon" value="54.368591">
+				<label>Latitude</label>
+				<input class="u-full-width" id="lat" value="24.482149">
+				<label>Elevation</label>
+				<input class="u-full-width" id="el" value="0.0">
+			</div>
+			<div class="four columns" id="src-info">
+				<h5>Source Info</h5>
+				<label>RA (J2000)</label>
+				<input class="u-full-width" id="ra" value="16.759166666666665">
+				<label>DEC (J2000)</label>
+				<input class="u-full-width" id="dec" value="-80.30777777777777">
+				<label>Name (Optional)</label>
+				<input class="u-full-width" id="name" value="ESO013-G012">
+				<button id="submit" class="u-full-width">Find Current Az/El!</button>
+			</div>
+			<div class="four columns group-box" id="output"></div>
+		</div>
     </div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="{{ url_for('static', filename='js/app.js')}}"></script>

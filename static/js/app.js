@@ -9,16 +9,15 @@ function App(){
         var requestUrl = baseUrl + "/get_ephem" ;
         console.log(observer_details)
         console.log(sources[0])
-        var self = this
-        var success_cb = function(data){
-            self.populateOutput(data.sources);
-        }
+        var self = this;
         $.ajax({
             type: "POST",
             url:"/get_ephem",
             contentType:"application/json",
             data: JSON.stringify({observer_details:observer_details, sources:sources}),
-            success: success_cb,
+            success: function(data){
+                self.populateOutput.bind(self)(data.sources);
+            },
 
         })
     }

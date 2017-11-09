@@ -3,6 +3,7 @@ import math
 import datetime
 
 from flask import Flask, request, jsonify
+from flask_cors import cross_origin, CORS
 import ephem
 
 module_logger = logging.getLogger(__name__)
@@ -10,7 +11,9 @@ module_logger = logging.getLogger(__name__)
 class EphemAPI(object):
 
     methods = {
-        "/get_ephem":{"method":"process_ephem_request","method_type":["POST"]}
+        "/get_ephem":{"method":"process_ephem_request",
+                      "method_type":["POST"],
+                      "cross_origin":True}
     }
 
     def __init__(self):
@@ -97,10 +100,17 @@ class EphemAPI(object):
             return sources_new
 
     @classmethod
-    def create_flask_app(cls, name="ephem-api",app=None):
+    def create_flask_app(cls, name="ephem-api",app=None,cors=False):
         api = cls()
         if app is None:
             app = Flask(name)
+        if cors:
+            CORS(app)
         for key in cls.methods:
-            app.route(key, methods=cls.methods[key]["method_type"])(getattr(api, cls.methods[key]["method"]))
+            method_dict = cls.methods[key]
+            route_method = getattr(api, method_dict["method"])
+            route_method_types = method_dict["method_type"]
+            # if method_dict['cross_origin']:
+            #     route_method = cross_origin(allow_headers=["Content-Type"])(route_method)
+            app.route(key, methods=cls.methods[key]["method_type"])(route_method)
         return app, api
